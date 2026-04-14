@@ -1,0 +1,8 @@
+{
+    "gamefolder": "game",
+    "players": [
+        "py1",
+        "py2"
+    ],
+    "keep_logs_from_unused_bots":false
+}
