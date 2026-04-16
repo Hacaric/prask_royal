@@ -66,7 +66,7 @@ turn = 0
 players_errored_out:dict[int, Exception] = {}
 while game_active:
     state = g.parse()
-    moves = []
+    # moves = []
     for player_id in player_subprocesses:
         if player_id in players_errored_out:
             continue
@@ -84,12 +84,13 @@ while game_active:
         # Get response with timeout logic
         try:
             move = player.stdout.readline().strip()
-            moves.append((move, player))
+            # moves.append((move, player))
+            g.executeTurn(move, player)
         except Exception as e:
             log(f"Error {e} occured while playing turn of player {player}")
             handle_timeout_or_error(player)
         observer.write(g.parse())
-        log(f'Heppy turns! {moves}')
+        # log(f'Heppy turns! {moves}')
     turn += 1
     if turn > 20:
         log("\n\nFOR TESTING PURPOSES TURNS WERE CAPPED TO 20\nEnding game...\n\n")

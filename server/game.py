@@ -3,8 +3,8 @@ class Game:
         self.map = map_
         self.log = log
         self.playerIDlist = playerIDlist
-    def executeTurns(self, turns):
-        for playerID, turn in enumerate(turns):
+    def executeTurn(self, turns, player_id):
+        # for playerID, turn in enumerate(turns):
             if self.validateTurn(playerID, turn):
                 self.executeTurn(playerID, turn)
             else:
