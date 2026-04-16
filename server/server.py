@@ -6,6 +6,9 @@ import os
 from datetime import datetime # why is there datetime inside datetime??
 from gamemap import *
 
+# This developer is stupid ;)
+
+
 class Game:
     def __init__(self, map_:Map, log):
         self.map = map_
