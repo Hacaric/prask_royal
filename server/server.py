@@ -5,21 +5,8 @@ import subprocess
 import os
 from datetime import datetime # why is there datetime inside datetime??
 from gamemap import *
-
-class Game:
-    def __init__(self, map_:Map, log):
-        self.map = map_
-        self.log = log
-    def executeTurns(self, turns):
-        for playerID, turn in enumerate(turns):
-            if self.validateTurn(playerID, turn):
-                self.executeTurn(playerID, turn)
-            else:
-                self.log(f"Invalid turn from player: {playerID}")
-    def parse(self):
-        return self.map.parse()
-    def removePlayer(self, playerID):
-        pass #TODO
+from game import Game
+from observer_logger import Observer
 
 with open(os.path.join(os.path.dirname(__file__), '..', 'config.json')) as f:
     CONFIG_JSON = json.load(f)
@@ -69,9 +56,11 @@ for id, path, command in player_program_files:
 def handle_timeout_or_error(p):
     log(f"Timeout: {p}")
 
+observer = Observer(os.path.join(gamedir, 'observer.gz'))
 m = Map()
 m.new()
 g = Game(m, log)
+observer.write(g.parse())
 game_active = True
 turn = 0
 players_errored_out:dict[int, Exception] = {}
@@ -99,11 +88,14 @@ while game_active:
         except Exception as e:
             log(f"Error {e} occured while playing turn of player {player}")
             handle_timeout_or_error(player)
+        observer.write(g.parse())
         log(f'Heppy turns! {moves}')
     turn += 1
     if turn > 20:
         log("\n\nFOR TESTING PURPOSES TURNS WERE CAPPED TO 20\nEnding game...\n\n")
         break
+observer.write(g.parse())
+observer.close() # DONT FORGET TO CLOSE THE FILE!!!
 for key, player_subprocess in player_subprocesses.items():
     if not key in players_errored_out:
         player_subprocess.terminate()
