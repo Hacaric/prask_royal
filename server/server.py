@@ -1,11 +1,11 @@
-from _config import Settings
-from _stats import Stats
+from game._config import Settings
+from game._stats import Stats
 import json
 import subprocess
 import os
 from datetime import datetime # why is there datetime inside datetime??
-from gamemap import *
-from game import Game
+from game.gamemap import *
+from game.game import Game
 from observer_logger import Observer
 
 # Open configuration files
@@ -50,14 +50,14 @@ def setupLogger(logdir):
     LOG_FILE = open(os.path.join(logdir, '__server__.log'), 'w')
     def log(*msg):
         """Log into server log file"""
-        message = ' '.join([str(i) for i in msg]) + '\n'
+        message = f"[{datetime.now().strftime('%d.%m.%Y-%H:%M:%S')}] {' '.join([str(i) for i in msg])}\n"
         LOG_FILE.write(message)
         print(message, end='')
     return log
 
 gamedir, logdir = setupGameDir(CONFIG_JSON, GAMES_JSON)
 log = setupLogger(logdir)
-log(f'[{datetime.now().strftime('%d.%B.%Y-%H:%M:%S')}] Start of log file')
+log(f'Start of log file')
 
 
 # Run players' programs
@@ -79,7 +79,7 @@ def handle_timeout_or_error(p):
 observer = Observer(os.path.join(gamedir, 'observer.gz'))
 # gamemap = Map()
 # gamemap.new()
-game = Game(log)
+game = Game(log, list(player_subprocesses.keys()))
 # game.logToObserver(observer)
 observer.write(game.parse())
 game_active = True
@@ -106,11 +106,11 @@ while game_active:
             move = player.stdout.readline().strip()
             game.executeTurn(move, player)
         except Exception as e:
-            log(f"Error {e} occured while playing turn of player {player}")
+            log(f"Error \"{e}\" occured while playing turn of player {player}")
             handle_timeout_or_error(player)
         observer.write(game.parse())
     turn += 1
-    if not game.continue_playing(turn):
+    if game.should_stop_game(turn):
         break #TODO
 
 observer.write(game.parse())

@@ -1,15 +1,25 @@
+from game.gamemap import *
+
 class Game:
-    def __init__(self, map_:Map, log, playerIDlist):
-        self.map = map_
+    def __init__(self, log, playerIDlist):
+        self.map = Map()
         self.log = log
         self.playerIDlist = playerIDlist
+        self.alive_players = {i:True for i in range(len(playerIDlist))}
     def executeTurn(self, turns, player_id):
-        # for playerID, turn in enumerate(turns):
-            if self.validateTurn(playerID, turn):
-                self.executeTurn(playerID, turn)
-            else:
-                self.log(f"Invalid turn from player: {playerID}")
+        # Move logic
+        return
     def parse(self):
         return self.map.parse()
     def removePlayer(self, playerID):
-        pass #TODO
+        self.alive_players[playerID] = False
+        return
+
+    def should_stop_game(self, turn:int):
+        if not any(list(self.alive_players.values())):
+            self.log("No players alive: stopping game...")
+            return True
+        if turn > 20:
+            self.log("Stopping after 20th turn for testing prusposes...")
+            return True
+        return False

@@ -1,5 +1,5 @@
 import json
-from _config import Settings
+from game._config import Settings
 
 class Stucture:
     def __init__(self, type, x, y, health=None):

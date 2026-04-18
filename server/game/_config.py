@@ -1,4 +1,4 @@
-import entity_type
+import game.entity_type as entity_type
 
 WIDTH = 11
 HEIGHT = 25
