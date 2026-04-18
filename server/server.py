@@ -8,16 +8,23 @@ from gamemap import *
 from game import Game
 from observer_logger import Observer
 
+# Open configuration files
 with open(os.path.join(os.path.dirname(__file__), '..', 'config.json')) as f:
     CONFIG_JSON = json.load(f)
 with open(os.path.join(os.path.dirname(__file__), '..', 'games.json')) as f:
     GAMES_JSON = json.load(f)
 
-print(GAMES_JSON)
-print(type(GAMES_JSON))
-print(GAMES_JSON['gamefolder'])
-
 def setupGameDir(CONFIG_JSON:dict, GAMES_JSON:dict):
+    """
+        Creates game output directory if doesn't exist
+        Creates game/log directoruy if doesn't exists 
+        Deletes old *.log files from game/log if GAMES_JSON.keep_logs_from_unused_bots is False
+        Returns game direcory path and log directory path which are defined as:
+            gamedir = {GAMES_JSON.gamefolder}
+            logdir = {gamedir}/log
+        
+        Return: gamedir:str, logdir:str
+    """
     gamedir = os.path.join(os.path.dirname(__file__), '..', GAMES_JSON['gamefolder'])
     os.makedirs(gamedir, exist_ok=True)
     logdir = os.path.join(gamedir, 'log')
@@ -27,75 +34,86 @@ def setupGameDir(CONFIG_JSON:dict, GAMES_JSON:dict):
             if file[:-len('.log')] == '.log':
                 os.remove(os.path.join(logdir, file))
     return gamedir, logdir
+
+# LOG_FILE is global
 LOG_FILE = None
 def setupLogger(logdir):
+    """
+        Param: logdir - location of log file
+
+        Creates log file and returns function to log into that file.
+        Log file is located in {logdir}/__server__.log
+
+        Return: log:function - usage: log(*msg:tuple[any])
+    """
     global LOG_FILE
     LOG_FILE = open(os.path.join(logdir, '__server__.log'), 'w')
     def log(*msg):
+        """Log into server log file"""
         message = ' '.join([str(i) for i in msg]) + '\n'
         LOG_FILE.write(message)
         print(message, end='')
     return log
 
 gamedir, logdir = setupGameDir(CONFIG_JSON, GAMES_JSON)
-
 log = setupLogger(logdir)
 log(f'[{datetime.now().strftime('%d.%B.%Y-%H:%M:%S')}] Start of log file')
 
+
+# Run players' programs
+#
+# Loaded from CONFIG_JSON
+# Piping strout and stdin, communication canals
+# Stderr is directed into log file
+
 player_program_files = [(key, value['path'], value['command']) for key, value in CONFIG_JSON.items()]
-
-player_subprocesses = {
-    # subprocess.Popen(['python3', 'bot.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True),
-    # subprocess.Popen(['python3', 'bot.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-}
-
+player_subprocesses = {}
 for id, path, command in player_program_files:
     with open(os.path.join(logdir, str(id) + '.log'), 'w') as stderr_output:
         player_subprocesses[id] = subprocess.Popen([command, path], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=stderr_output, text=True)
 
+
 def handle_timeout_or_error(p):
-    log(f"Timeout: {p}")
+    log(f"Timeout or error: {p}")
 
 observer = Observer(os.path.join(gamedir, 'observer.gz'))
-m = Map()
-m.new()
-g = Game(m, log)
-observer.write(g.parse())
+# gamemap = Map()
+# gamemap.new()
+game = Game(log)
+# game.logToObserver(observer)
+observer.write(game.parse())
 game_active = True
 turn = 0
 players_errored_out:dict[int, Exception] = {}
 while game_active:
-    state = g.parse()
-    # moves = []
+    
     for player_id in player_subprocesses:
         if player_id in players_errored_out:
             continue
         player = player_subprocesses[player_id]
-        # Send data
         try:
-            player.stdin.write(state + "\n")
+            # Send data
+            player.stdin.write(game.parse() + "\n")
             player.stdin.flush()
         except BrokenPipeError:
             log(f"Error getting response from player {player_id}: Broken pipe")
             log(f"Removing player from game...")
-            g.removePlayer(player_id)
+            game.removePlayer(player_id)
             player_subprocesses[player_id].terminate()
             players_errored_out[player_id] = BrokenPipeError
         # Get response with timeout logic
         try:
             move = player.stdout.readline().strip()
-            # moves.append((move, player))
-            g.executeTurn(move, player)
+            game.executeTurn(move, player)
         except Exception as e:
             log(f"Error {e} occured while playing turn of player {player}")
             handle_timeout_or_error(player)
-        observer.write(g.parse())
-        # log(f'Heppy turns! {moves}')
+        observer.write(game.parse())
     turn += 1
-    if turn > 20:
-        log("\n\nFOR TESTING PURPOSES TURNS WERE CAPPED TO 20\nEnding game...\n\n")
-        break
-observer.write(g.parse())
+    if not game.continue_playing(turn):
+        break #TODO
+
+observer.write(game.parse())
 observer.close() # DONT FORGET TO CLOSE THE FILE!!!
 for key, player_subprocess in player_subprocesses.items():
     if not key in players_errored_out:
