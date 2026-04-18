@@ -2,6 +2,7 @@
 **Inspirated by board game version clash royal played on Prask camp**
 
 **In development, not all fetures are functional yet**
+
 Features: 
 - Supports multiple python bots, but integration of other languages should be easy
 - Log game states to file (observer.gz), than replay trough website observer.html
