@@ -1,5 +1,6 @@
 {
     "gamefolder": "game",
+    "map_path": "maps/map1.json",
     "players": [
         "py1",
         "py2"

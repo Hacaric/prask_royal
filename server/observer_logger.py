@@ -15,6 +15,12 @@ class Observer:
         self.output_file.close()
         # f = gzip.open(self.output_file_name + '.gz', "w")
 
+
+
+
+
+
+# ================ UNIT TEST START ================
 if __name__ == '__main__':
     import os
     print('\n\n[ UNIT TEST BEGIN ]')
@@ -36,3 +42,4 @@ if __name__ == '__main__':
         o.write_turn(i)
         i = input('| ')
     o.close()
+# ================ UNIT TEST END ================

@@ -1,4 +1,4 @@
-from game._config import Settings
+# from game._config import Settings
 from game._stats import Stats
 import json
 import subprocess
@@ -79,11 +79,14 @@ def handle_timeout_or_error(p):
 observer = Observer(os.path.join(gamedir, 'observer.gz'))
 # gamemap = Map()
 # gamemap.new()
-game = Game(log, list(player_subprocesses.keys()))
+game_map_type = None
+with open(os.path.join(os.path.dirname(__file__), '..', GAMES_JSON['map_path'])) as f:
+    game_map_type = json.load(f)
+game = Game(log, list(player_subprocesses.keys()), game_map_type)
 # game.logToObserver(observer)
 observer.write(game.parse())
 game_active = True
-turn = 0
+round = 0
 players_errored_out:dict[int, Exception] = {}
 while game_active:
     
@@ -109,8 +112,8 @@ while game_active:
             log(f"Error \"{e}\" occured while playing turn of player {player}")
             handle_timeout_or_error(player)
         observer.write(game.parse())
-    turn += 1
-    if game.should_stop_game(turn):
+    round += 1
+    if game.should_stop_game(round):
         break #TODO
 
 observer.write(game.parse())
@@ -118,3 +121,6 @@ observer.close() # DONT FORGET TO CLOSE THE FILE!!!
 for key, player_subprocess in player_subprocesses.items():
     if not key in players_errored_out:
         player_subprocess.terminate()
+
+with open(os.path.join(gamedir, "score.json"), "w") as f:
+    json.dump(game.getScore(), f)

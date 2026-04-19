@@ -1,0 +1,12 @@
+{
+    "width":11,
+    "height":25,
+    "towers":[
+                {"x":5, "y":3, "type":"MainTower", "owner":"A"},
+                {"x":2, "y":5, "type":"Tower", "owner":"A"},
+                {"x":7, "y":5, "type":"Tower", "owner":"A"},
+                {"x":5, "y":22, "type":"MainTower", "owner":"B"},
+                {"x":2, "y":20, "type":"Tower", "owner":"B"},
+                {"x":7, "y":20, "type":"Tower", "owner":"B"}
+            ]
+}

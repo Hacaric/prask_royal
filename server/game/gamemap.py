@@ -1,5 +1,5 @@
 import json
-from game._config import Settings
+# from game._config import Settings
 
 class Stucture:
     def __init__(self, type, x, y, health=None):
@@ -24,27 +24,29 @@ def loadStructure(json_data):
     return Structure(data['type'], type['x'], type['y'], health=type['health'])
 
 class Map:
-    def __init__(self, width = Settings.Map.width, height = Settings.Map.height, structures=[], gamemap=None):
-        self.width = width
-        self.height = height
-        if gamemap:
-            self.map = gamemap
-        else:
-            self.map = [[[] for __ in range(height)] for _ in range(width)]
+    def __init__(self, game_map_config):
+        self.width = game_map_config["width"]
+        self.height = game_map_config["height"]
+        # TODO : load structures from game_map_config
+        self.map = [[[] for __ in range(height)] for _ in range(width)]
         self.map_structures = [[[] for __ in range(height)] for _ in range(width)]
-        self.structures = structures
-        for i in range(len(structures)):
-            self.map_structures[struct.x][struct.y] = i
+        self.structures = []
+
+        # self.structures = structures
+        # for i in range(len(structures)):
+        #     self.map_structures[struct.x][struct.y] = i
     def parsemap(self):
         return [str(self.width), str(self.height), json.dumps(self.map)]
     def new(self):
-        for tower in Settings.Map.Structures.towers:
-            self.structures.append(Stucture(tower["type"], tower["x"], tower["y"]))
-            self.map_structures[tower["x"]][tower["y"]] = len(self.structures) - 1
-            self.structures.append(Stucture(tower["type"], tower["x"], Settings.Map.height-tower["y"]))
-            self.map_structures[tower["x"]][Settings.Map.height-tower["y"]] = len(self.structures) - 1
+        return
+        # for tower in Settings.Map.Structures.towers:
+        #     self.structures.append(Stucture(tower["type"], tower["x"], tower["y"]))
+        #     self.map_structures[tower["x"]][tower["y"]] = len(self.structures) - 1
+        #     self.structures.append(Stucture(tower["type"], tower["x"], Settings.Map.height-tower["y"]))
+        #     self.map_structures[tower["x"]][Settings.Map.height-tower["y"]] = len(self.structures) - 1
     def parse(self):
         return '\t'.join(self.parsemap() + [struct.parse() for struct in self.structures])
+        
 def loadMap(string_data):
     json_data = string_data.split('\t')
     width, height = int(json_data[0]), int(json_data[1])
