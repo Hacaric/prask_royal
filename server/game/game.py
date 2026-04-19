@@ -1,4 +1,5 @@
 from game.gamemap import *
+import json
 
 class Game:
     def __init__(self, log, playerIDlist):
@@ -10,7 +11,14 @@ class Game:
         # Move logic
         return
     def parse(self):
-        return self.map.parse()
+        """
+            Returns game state in json format (string)
+        """
+        map_data = self.map.parse()
+
+        json_data = {"map":map_data}
+        json_data = json.dumps(json_data)
+        return json_data
     def removePlayer(self, playerID):
         self.alive_players[playerID] = False
         return
