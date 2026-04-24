@@ -1,5 +1,6 @@
 from game.gamemap import *
-import json
+import json, os
+stats_filename = os.path.join(os.path.dirname(__file__), "stats.json")
 
 class Game:
     def __init__(self, log, playerIDlist, game_map_config):
@@ -7,6 +8,12 @@ class Game:
         self.log = log
         self.playerIDlist = playerIDlist
         self.alive_players = {i:True for i in range(len(playerIDlist))}
+
+        self.log("Game.__init__: Loading stats.json...")
+        with open(stats_filename, "r") as f:
+            self.stats = json.dump(f)
+        self.log("Game.__init__: Loaded stats succesfully...")
+        
     def executeTurn(self, turns, player_id):
         # Move logic
         return
