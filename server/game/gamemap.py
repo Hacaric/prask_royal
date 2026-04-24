@@ -44,8 +44,12 @@ class Map:
         #     self.map_structures[tower["x"]][tower["y"]] = len(self.structures) - 1
         #     self.structures.append(Stucture(tower["type"], tower["x"], Settings.Map.height-tower["y"]))
         #     self.map_structures[tower["x"]][Settings.Map.height-tower["y"]] = len(self.structures) - 1
-    def parse(self):
+    def parse(self, playerID):
         return '\t'.join(self.parsemap() + [struct.parse() for struct in self.structures])
+        
+    def parseAll(self):
+        return '\t'.join(self.parsemap() + [struct.parse() for struct in self.structures])
+
         
 def loadMap(string_data):
     json_data = string_data.split('\t')

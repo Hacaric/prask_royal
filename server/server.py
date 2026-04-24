@@ -66,7 +66,8 @@ log(f'Start of log file')
 # Piping strout and stdin, communication canals
 # Stderr is directed into log file
 
-player_program_files = [(key, value['path'], value['command']) for key, value in CONFIG_JSON.items()]
+# MAKE SURE ALL PLAYER IDs ARE STRINGS!
+player_program_files = [(str(key), value['path'], value['command']) for key, value in CONFIG_JSON.items()]
 player_subprocesses = {}
 for id, path, command in player_program_files:
     with open(os.path.join(logdir, str(id) + '.log'), 'w') as stderr_output:
@@ -84,7 +85,7 @@ with open(os.path.join(os.path.dirname(__file__), '..', GAMES_JSON['map_path']))
     game_map_type = json.load(f)
 game = Game(log, list(player_subprocesses.keys()), game_map_type)
 # game.logToObserver(observer)
-observer.write(game.parse())
+observer.write(game.parse(None))
 game_active = True
 round = 0
 players_errored_out:dict[int, Exception] = {}
@@ -96,7 +97,7 @@ while game_active:
         player = player_subprocesses[player_id]
         try:
             # Send data
-            player.stdin.write(game.parse() + "\n")
+            player.stdin.write(game.parse(player_id) + "\n")
             player.stdin.flush()
         except BrokenPipeError:
             log(f"Error getting response from player {player_id}: Broken pipe")

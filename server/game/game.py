@@ -10,11 +10,14 @@ class Game:
     def executeTurn(self, turns, player_id):
         # Move logic
         return
-    def parse(self):
+    def parse(self, playerID):
         """
             Returns game state in json format (string)
         """
-        map_data = self.map.parse()
+        if playerID == None: # Print data to observer - get data from ALL players, IMPORTANT: make sure no playerID is None
+            map_data = self.map.parseAll()
+        else:
+            map_data = self.map.parse(playerID)
 
         json_data = {"map":map_data}
         json_data = json.dumps(json_data)
