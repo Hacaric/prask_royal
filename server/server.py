@@ -84,8 +84,8 @@ log(f'Start of log file')
 # MAKE SURE ALL PLAYER IDs ARE STRINGS!
 player_program_files = [(str(key), value['path'], value['command']) for key, value in CONFIG_JSON.items()]
 if OPERATING_SYSTEM == "WINDOWS":
-    for key in player_program_files.keys():
-        player_program_files[key][1] = player_program_files[key][1].replace("/","\\")
+    for item in player_program_files:
+        item[1] = item[1].replace("/","\\")
 
 player_subprocesses = {}
 for id, path, command in player_program_files:
@@ -138,8 +138,8 @@ while game_active:
 
 observer.write(game.parse(None))
 observer.close() # DONT FORGET TO CLOSE THE FILE!!!
-for key, player_subprocess in player_subprocesses.items():
-    if not key in players_errored_out:
+for item, player_subprocess in player_subprocesses.items():
+    if not item in players_errored_out:
         player_subprocess.terminate()
 
 with open(os.path.join(gamedir, "score.json"), "w") as f:
