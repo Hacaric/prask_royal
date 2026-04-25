@@ -117,7 +117,10 @@ while game_active:
         try:
             # Send data
             player.stdin.write(game.parse(player_id) + "\n")
-            player.stdin.flush()
+            try:
+                player.stdin.flush()
+            except PermissionError:
+                pass
         except BrokenPipeError:
             log(f"Error getting response from player {player_id}: Broken pipe")
             log(f"Removing player from game...")

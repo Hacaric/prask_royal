@@ -9,7 +9,10 @@ import json
 def log(*msg):
     message = ' '.join(msg) + '\n'
     sys.stderr.write(message)
-    sys.stderr.flush()
+    try:
+        sys.stderr.flush()
+    except PermissionError:
+        pass
     # log_file.write(message)
     # log_file.flush()
 log("Initialized log file.")
@@ -32,8 +35,11 @@ def run(player):
         
         # Write the move to stdout and flush to ensure the manager receives it
         sys.stdout.write(move.parse() + "\n")
-        sys.stdout.flush()
-        
+        try:
+            sys.stdout.flush()
+        except PermissionError:
+            pass
+
         turn += 1
 
     # Errors will be captures by host
