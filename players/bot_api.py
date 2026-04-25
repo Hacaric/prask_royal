@@ -1,5 +1,5 @@
 import sys, os
-import _config
+# import _config
 import _stats
 import json
 
