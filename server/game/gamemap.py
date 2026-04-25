@@ -28,8 +28,8 @@ class Map:
         self.width = game_map_config["width"]
         self.height = game_map_config["height"]
         # TODO : load structures from game_map_config
-        self.map = [[[] for __ in range(height)] for _ in range(width)]
-        self.map_structures = [[[] for __ in range(height)] for _ in range(width)]
+        self.map = [[[] for __ in range(self.height)] for _ in range(self.width)]
+        self.map_structures = [[[] for __ in range(self.height)] for _ in range(self.width)]
         self.structures = []
 
         # self.structures = structures
@@ -46,7 +46,7 @@ class Map:
         #     self.map_structures[tower["x"]][Settings.Map.height-tower["y"]] = len(self.structures) - 1
     def parse(self, playerID):
         return '\t'.join(self.parsemap() + [struct.parse() for struct in self.structures])
-        
+
     def parseAll(self):
         return '\t'.join(self.parsemap() + [struct.parse() for struct in self.structures])
 

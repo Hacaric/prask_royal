@@ -11,9 +11,9 @@ class Game:
 
         self.log("Game.__init__: Loading stats.json...")
         with open(stats_filename, "r") as f:
-            self.stats = json.dump(f)
+            self.stats = json.load(f)
         self.log("Game.__init__: Loaded stats succesfully...")
-        
+
     def executeTurn(self, turns, player_id):
         # Move logic
         return

@@ -1,5 +1,5 @@
 # from game._config import Settings
-from game._stats import Stats
+# from game._stats import Stats
 import json
 import subprocess
 import os
@@ -112,12 +112,12 @@ while game_active:
         except Exception as e:
             log(f"Error \"{e}\" occured while playing turn of player {player}")
             handle_timeout_or_error(player)
-        observer.write(game.parse())
+        observer.write(game.parse(None))
     round += 1
     if game.should_stop_game(round):
         break #TODO
 
-observer.write(game.parse())
+observer.write(game.parse(None))
 observer.close() # DONT FORGET TO CLOSE THE FILE!!!
 for key, player_subprocess in player_subprocesses.items():
     if not key in players_errored_out:
