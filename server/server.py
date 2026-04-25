@@ -110,7 +110,7 @@ game_active = True
 round = 0
 players_errored_out:dict[int, Exception] = {}
 while game_active:
-    
+    log(f"======= Round {round} =======")
     for player_id in player_subprocesses:
         if player_id in players_errored_out:
             continue
