@@ -11,7 +11,7 @@ def log(*msg):
     sys.stderr.write(message)
     try:
         sys.stderr.flush()
-    except PermissionError:
+    except:
         pass
     # log_file.write(message)
     # log_file.flush()
@@ -37,7 +37,7 @@ def run(player):
         sys.stdout.write(move.parse() + "\n")
         try:
             sys.stdout.flush()
-        except PermissionError:
+        except:
             pass
 
         turn += 1

@@ -11,13 +11,13 @@ class Observer:
         self.output_file.write(data.encode('UTF-8'))
         try:
             self.output_file.flush()
-        except PermissionError:
+        except:
             pass
 
     def close(self):
         try:
             self.output_file.close()
-        except PermissionError:
+        except:
             pass
         # f = gzip.open(self.output_file_name + '.gz', "w")
 

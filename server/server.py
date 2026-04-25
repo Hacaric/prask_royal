@@ -119,7 +119,7 @@ while game_active:
             player.stdin.write(game.parse(player_id) + "\n")
             try:
                 player.stdin.flush()
-            except PermissionError:
+            except:
                 pass
         except BrokenPipeError:
             log(f"Error getting response from player {player_id}: Broken pipe")
