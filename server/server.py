@@ -83,9 +83,10 @@ log(f'Start of log file')
 
 # MAKE SURE ALL PLAYER IDs ARE STRINGS!
 player_program_files = [[str(key), value['path'], value['command']] for key, value in CONFIG_JSON.items()]
-if OPERATING_SYSTEM == "WINDOWS":
-    for item in player_program_files:
+for item in player_program_files:
+    if OPERATING_SYSTEM == "WINDOWS":
         item[1] = item[1].replace("/","\\")
+    item[1] = os.path.join(os.path.dirname(__file__), "..", item[1])
 
 player_subprocesses = {}
 for id, path, command in player_program_files:
