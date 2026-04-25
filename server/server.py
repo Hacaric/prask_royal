@@ -2,17 +2,32 @@
 # from game._stats import Stats
 import json
 import subprocess
-import os
+import os, sys
 from datetime import datetime # why is there datetime inside datetime??
 from game.gamemap import *
 from game.game import Game
 from observer_logger import Observer
+
+NO_ADJUST_PATH = True if "--no-adjust-paths" in sys.argv else False
+
+import platform
+if NO_ADJUST_PATH:
+    OPERATING_SYSTEM = "UNIX"
+elif platform.system() == "Windows":
+    OPERATING_SYSTEM = "WINDOWS"
+else:
+    OPERATING_SYSTEM = "UNIX"
+
 
 # Open configuration files
 with open(os.path.join(os.path.dirname(__file__), '..', 'config.json')) as f:
     CONFIG_JSON = json.load(f)
 with open(os.path.join(os.path.dirname(__file__), '..', 'games.json')) as f:
     GAMES_JSON = json.load(f)
+
+if OPERATING_SYSTEM == "WINDOWS":
+    GAMES_JSON["gamefolder"] = GAMES_JSON["gamefolder"].replace("/","\\")
+    GAMES_JSON["map_path"] = GAMES_JSON["map_path"].replace("/","\\")
 
 def setupGameDir(CONFIG_JSON:dict, GAMES_JSON:dict):
     """
@@ -68,6 +83,10 @@ log(f'Start of log file')
 
 # MAKE SURE ALL PLAYER IDs ARE STRINGS!
 player_program_files = [(str(key), value['path'], value['command']) for key, value in CONFIG_JSON.items()]
+if OPERATING_SYSTEM == "WINDOWS":
+    for key in player_program_files.keys():
+        player_program_files[key][1] = player_program_files[key][1].replace("/","\\")
+
 player_subprocesses = {}
 for id, path, command in player_program_files:
     with open(os.path.join(logdir, str(id) + '.log'), 'w') as stderr_output:
