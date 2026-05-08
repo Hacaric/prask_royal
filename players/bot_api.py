@@ -1,11 +1,8 @@
 import sys, os
-# import _config
 import _stats
 import json
 
-
-# log_file_path = os.path.join(os.path.dirname(__file__), 'latest.log')
-# log_file = open(log_file_path, 'w')
+# IMPORTANT: Always log into stderr, stdout is reserved for communication with the server 
 def log(*msg):
     message = ' '.join(msg) + '\n'
     sys.stderr.write(message)
@@ -13,27 +10,27 @@ def log(*msg):
         sys.stderr.flush()
     except:
         pass
-    # log_file.write(message)
-    # log_file.flush()
-log("Initialized log file.")
+log("Initialized log function.")
 
 def run(player):
     turn = 0
     while True:
-        # Read the game state sent by the manager
+        # Read the game state sent by the server
         line = sys.stdin.readline()
         
-        # Exit if the manager closes the connection
+        # Exit if the server closes the connection
         if not line:
             break
             
         game_state = line.strip()
         
+        # Purely for readibility of the log file
         log(f"\nTURN {turn}")
+
         # Logic to determine the next move
         move = player.make_turn(game_state)
         
-        # Write the move to stdout and flush to ensure the manager receives it
+        # Write the move to stdout and flush to ensure the server receives it
         sys.stdout.write(move.parse() + "\n")
         try:
             sys.stdout.flush()
@@ -42,10 +39,7 @@ def run(player):
 
         turn += 1
 
-    # Errors will be captures by host
+    # Errors will be captures by the server, no error handling needed
     # except Exception as e:
     #     log(f"Error in the RUN function (in bot_api): {e}")
 
-def process_move(state):
-    # Logic for the competition goes here
-    return "MOVE_DATA"

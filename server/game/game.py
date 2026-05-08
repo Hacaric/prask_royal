@@ -34,6 +34,10 @@ class Game:
         self.alive_players[playerID] = False
         return
 
+    def tick(self):
+        # All players played their moves, now update the board, move entities, add elixir to players, etc.
+        return
+
     def should_stop_game(self, round:int):
         if not any(list(self.alive_players.values())):
             self.log("No players alive: stopping game...")

@@ -136,6 +136,7 @@ while game_active:
             log(f"Error \"{e}\" occured while playing turn of player {player}")
             handle_timeout_or_error(player)
         observer.write(game.parse(None))
+    game.tick()
     round += 1
     if game.should_stop_game(round):
         break #TODO
