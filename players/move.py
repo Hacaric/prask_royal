@@ -1,7 +1,16 @@
 import json
 
 class Turn:
+    """
+    The base class for turn types.
+
+    Can't be used directly, serves as template for turn types.
+    
+    Other turn types are inherited from the Turn class
+    """
     movetype = None
+    def __init__(self, *args):
+        raise Exception("Cannot create instance of class Turn, this only template. Try using class inherited from it, eg. PlaceTurn, EmptyTurn, ...")
     def parse(self):
         return None
         # This didn't work, because it tried to parse 'self' and who knows what else, im not gonna hardcode it
