@@ -1,7 +1,7 @@
 import sys, os
 import _stats
 import json
-from move import Turn
+from turn_type import Turn
 
 """
 This file is ment to be executed by server.py on a separate thread and servers for the bot as interface to interact with the server
@@ -27,7 +27,7 @@ def run(player):
     """
     Args: player, type: has function player.make_turn(server_data:str)
     Creates while-true cycle that waits for input from stdin, forwards it to player.make_turn() and output of the function is written into stdout
-    player.make_turn() shall return 
+    player.make_turn() shall return an instacne of child class of Turn, eg. instance of EmptyTurn or of PlaceTurn
     """
     turn_i = 0
     while True:
