@@ -11,7 +11,8 @@
     - Spawn extities (summon them immieadately to avoid collision between players)
     - Restock their cards
 
+- Make it compatible with backend (https://github.com/trojsten/ksp-proboj-web)
+
 ### Security
 - Perform a security search to find and fix exploits
 - Maybe red-team attack trough the bots to see if it is possible to manipulate the game? :)
-- **IMPORTANT**: Make sure we do not execute a virus, ideally encapsulate the server inside docker container, for later

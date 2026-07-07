@@ -35,7 +35,7 @@ class Map:
         # self.structures = structures
         # for i in range(len(structures)):
         #     self.map_structures[struct.x][struct.y] = i
-    def parsemap(self):
+    def parsemap(self) -> list[str]:
         return [str(self.width), str(self.height), json.dumps(self.map)]
     def new(self):
         return
