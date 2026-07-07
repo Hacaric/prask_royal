@@ -1,8 +1,9 @@
 import json
+import game.entity_type
 # from game._config import Settings
 
 class Stucture:
-    def __init__(self, type, x, y, health=None):
+    def __init__(self, type:entity_type, x:int, y:int, health=None):
         self.x = x
         self.y = y
         self.type = type
@@ -38,6 +39,9 @@ class Map:
     def parsemap(self) -> list[str]:
         return [str(self.width), str(self.height), json.dumps(self.map)]
     def new(self):
+        """
+        Loads the default map state
+        """
         return
         # for tower in Settings.Map.Structures.towers:
         #     self.structures.append(Stucture(tower["type"], tower["x"], tower["y"]))
